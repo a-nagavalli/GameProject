@@ -6,11 +6,11 @@ Use WASD to move. Click on an enemy to select it for targeting, then press eithe
 You win if you defeat all the enemies before they defeat you.
 
 # Attributions
-[Simple DirectMedia Layer (SDL)](https://www.libsdl.org/index.php) by [these contributors](https://www.libsdl.org/credits.php), used under the [zlib license](https://www.zlib.net/zlib_license.html) (full SDL license [here](placeholder)).
+[Simple DirectMedia Layer (SDL)](https://www.libsdl.org/index.php) by [these contributors](https://www.libsdl.org/credits.php), used under the [zlib license](https://www.zlib.net/zlib_license.html) (full SDL license [here](https://github.com/a-nagavalli/GameProject/blob/main/LICENSES.txt)).
+
+[Simple Top Down Character](https://immunitys.itch.io/pixel-top-down-character) by [Immunity](https://immunitys.itch.io/), used under stated license (full Simple Top Down Character license [here](https://github.com/a-nagavalli/GameProject/blob/main/LICENSES.txt)). 
 
 [Zelda-like tilesets and sprites](https://opengameart.org/content/zelda-like-tilesets-and-sprites) by [Armando Montero](https://opengameart.org/users/armm1998), used under [CC0](https://creativecommons.org/publicdomain/zero/1.0/).
-
-[Simple Top Down Character](https://immunitys.itch.io/pixel-top-down-character) by [Immunity](https://immunitys.itch.io/), used under stated license (full Simple Top Down Character license [here](placeholder)). 
 
 [RPG Icons](https://opengameart.org/content/rpg-icons-3) by [Unnamed](https://opengameart.org/users/unnamed), used under [CC0](https://creativecommons.org/publicdomain/zero/1.0/).
 
