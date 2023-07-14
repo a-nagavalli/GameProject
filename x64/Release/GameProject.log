@@ -1,23 +1,5 @@
-﻿  main.cpp
-E:\vs projects\GameProject\GameProject\Entity.h(113,37): warning C4244: '+=': conversion from 'Uint64' to 'int', possible loss of data
-E:\vs projects\GameProject\GameProject\Entity.h(138,37): warning C4244: '-=': conversion from 'Uint64' to 'int', possible loss of data
-E:\vs projects\GameProject\GameProject\Entity.h(163,36): warning C4244: '+=': conversion from 'Uint64' to 'int', possible loss of data
-E:\vs projects\GameProject\GameProject\Entity.h(188,36): warning C4244: '-=': conversion from 'Uint64' to 'int', possible loss of data
-E:\vs projects\GameProject\GameProject\HealthBar.h(43,17): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-E:\vs projects\GameProject\GameProject\Projectile.h(106,53): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-E:\vs projects\GameProject\GameProject\Projectile.h(107,53): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-E:\vs projects\GameProject\GameProject\Projectile.h(123,53): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-E:\vs projects\GameProject\GameProject\Projectile.h(124,53): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-E:\vs projects\GameProject\GameProject\Projectile.h(140,53): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-E:\vs projects\GameProject\GameProject\Projectile.h(141,53): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-E:\vs projects\GameProject\GameProject\Projectile.h(157,53): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-E:\vs projects\GameProject\GameProject\Projectile.h(158,53): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-E:\vs projects\GameProject\GameProject\Projectile.h(173,24): warning C4244: '=': conversion from 'Uint64' to 'int', possible loss of data
-E:\vs projects\GameProject\GameProject\SpellbarBox.h(83,21): warning C4244: 'initializing': conversion from 'Uint64' to 'int', possible loss of data
-E:\vs projects\GameProject\GameProject\main.cpp(78,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-E:\vs projects\GameProject\GameProject\main.cpp(410,32): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-  Generating code
-  1 of 917 functions ( 0.1%) were compiled, the rest were copied from previous compilation.
+﻿  Generating code
+  0 of 917 functions ( 0.0%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
     0 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
