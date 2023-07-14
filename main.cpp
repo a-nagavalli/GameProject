@@ -109,7 +109,7 @@ int main(int argc, char* argv[])
 	
 	int healthBarX = manager.players[0]->sprite.rect.x;
 	int healthBarY = manager.players[0]->sprite.rect.y - 15;
-	manager.players[0]->setupHealthBar("healthBarSprite.bmp", healthBarX, healthBarY, 51, 7);
+	manager.players[0]->setupHealthBar("UI Sprites/healthBarSprite.bmp", healthBarX, healthBarY, 51, 7);
 
 	manager.enemies.push_back(std::make_shared<Enemy>(renderer, 500, 450, 50, 75, "goblin2.mvt", &enemySprites));
 	manager.enemies[0]->setMoveSpeedDelayX(15);
@@ -120,7 +120,7 @@ int main(int argc, char* argv[])
 
 	healthBarX = manager.enemies[0]->sprite.rect.x;
 	healthBarY = manager.enemies[0]->sprite.rect.y - 15;
-	manager.enemies[0]->setupHealthBar("healthBarSprite.bmp", healthBarX, healthBarY, 51, 7);
+	manager.enemies[0]->setupHealthBar("UI Sprites/healthBarSprite.bmp", healthBarX, healthBarY, 51, 7);
 
 	manager.enemies.push_back(std::make_shared<Enemy>(renderer, 300, 250, 50, 75, "goblin1.mvt", &enemySprites));
 	manager.enemies[1]->setMoveSpeedDelayX(15);
@@ -131,10 +131,10 @@ int main(int argc, char* argv[])
 
 	healthBarX = manager.enemies[1]->sprite.rect.x;
 	healthBarY = manager.enemies[1]->sprite.rect.y - 15;
-	manager.enemies[1]->setupHealthBar("healthBarSprite.bmp", healthBarX, healthBarY, 51, 7);
+	manager.enemies[1]->setupHealthBar("UI Sprites/healthBarSprite.bmp", healthBarX, healthBarY, 51, 7);
 
 	// set up target selector icon
-	SDL_Surface* targetSelectorSurface = SDL_LoadBMP("targetSelector.bmp");
+	SDL_Surface* targetSelectorSurface = SDL_LoadBMP("UI Sprites/targetSelector.bmp");
 	if (targetSelectorSurface == NULL) {
 		std::cout << "ERROR: TargetSelector: couldn't load surface" << std::endl;
 		std::cout << SDL_GetError() << std::endl;

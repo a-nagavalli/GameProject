@@ -108,14 +108,14 @@ class Manager
 					if (players[i]->health <= 0) {
 						players[i] = nullptr;
 
-						SDL_Surface* surface = SDL_LoadBMP("lose.bmp");
+						SDL_Surface* surface = SDL_LoadBMP("UI Sprites/lose.bmp");
 						if (surface == NULL) {
-							std::cout << "ERROR: win.bmp: couldn't load surface" << std::endl;
+							std::cout << "ERROR: lose.bmp: couldn't load surface" << std::endl;
 							std::cout << SDL_GetError() << std::endl;
 						}
 						SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
 						if (texture == NULL) {
-							std::cout << "ERROR: win.bmp: couldn't create texture" << std::endl;
+							std::cout << "ERROR: lose.bmp: couldn't create texture" << std::endl;
 							std::cout << SDL_GetError() << std::endl;
 						}
 						SDL_Rect rect;
@@ -218,7 +218,7 @@ class Manager
 			// Display Win screen
 			if (checkIfEnemiesDead()) {
 
-				SDL_Surface* surface = SDL_LoadBMP("win.bmp");
+				SDL_Surface* surface = SDL_LoadBMP("UI Sprites/win.bmp");
 				if (surface == NULL) {
 					std::cout << "ERROR: win.bmp: couldn't load surface" << std::endl;
 					std::cout << SDL_GetError() << std::endl;
