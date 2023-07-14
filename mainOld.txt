@@ -1,0 +1,607 @@
+#include <SDL.h>
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <cmath>
+#include <vector>
+
+
+
+#include <list>
+#include <memory>
+
+
+#include "Entity.h"
+#include "Enemy.h"
+#include "Player.h"
+
+bool running = true;
+const Uint64 MAX_DT = 17;	// every update should be in intervals of dt (max should be 17 ms)
+
+// Function prototypes
+void handleInput(Entity& player);
+
+
+/*
+	TO-DO:	
+			can give projectile its own target pointer at instantiation (can make Update() virtual then)
+			make Entity's Update() function virtual
+			projectiles
+			UI
+			delete Enemy.h's xMoveDone and yMoveDone members
+			deleting things in the main game loop;
+				have to make things dynamically allocated so we can destroy them,
+				but we don't want to go through the process of loading in new textures
+				for each newly created object. so we have to modify the constructors/
+				ways the classes are structured.
+				maybe will need to create a separate Texture Cache for each class? idk
+				yeah, create Fireball textures (before loop starts), Goblin textures, etc.
+				then in the render loop everything will work as long as you just access the textures
+				properly
+
+	(maybe)
+		allow user to set the magic numbers in Projectile moveToSmooth()
+		melee attack
+		call Enemy.updatePosition() in Enemy.Update()?
+		rename Enemy class
+		rename "delay" stuff and "speed" stuff to timing/stride?
+		should movement timers be done in the dt loop? could do them there and then pass them to the object
+				or could just call goblin's updatePosition() function in the dt loop 
+*/
+
+class Projectile : public Entity
+{
+	private:
+		Uint64 startMoveTime, endMoveTime;
+		Uint64 currTime, lastTime;
+		bool greaterX, greaterY;
+		int xDelay, yDelay;
+		int targetUpdateDelay;
+		int targetXPos, targetYPos;
+		int deltaX, deltaY;
+
+
+
+		Entity& target;
+		
+
+
+
+	public:
+		Projectile(const std::string& argPath, SDL_Renderer* const& argRenderer, int xPos, int yPos, int width, int height, Entity& argTarget)
+			: Entity(argPath, argRenderer, xPos, yPos, width, height), target(argTarget)
+		{
+			startMoveTime = endMoveTime = 0;
+			currTime = lastTime = 0;
+			greaterX = greaterY = false;
+			xDelay = yDelay = 0;
+			targetUpdateDelay = 0;
+			targetXPos = targetYPos = 0;
+			deltaX = deltaY = 0;
+		}
+
+		void Update(Uint64 deltaTime)
+		{
+			updateMovementBools(deltaTime);
+			updatePositionSmooth();
+		}
+
+		void setTargetUpdateDelay(Uint64 num)
+		{
+			targetUpdateDelay = num;
+			lastTime = num;
+		}
+
+		void updatePositionSmooth()		// note that this function is called every pass through the main game loop
+		{
+			moveToSmooth();
+		}
+
+		bool moveToSmooth()		// this will only get the sprite close to the target position (not exact) in the approximate length of time
+		{
+			currTime = SDL_GetTicks64();
+
+			if ((currTime - lastTime) > targetUpdateDelay) {
+
+				deltaX = abs(sprite.rect.x - target.sprite.rect.x);		// distance needed to travel
+				deltaY = abs(sprite.rect.y - target.sprite.rect.y);
+
+				xDelay = int(round(2000 * 1.0 / deltaX));	
+				yDelay = int(round(2000 * 1.0 / deltaY));
+
+				movingDown = movingUp = movingLeft = movingRight = false;
+
+				targetXPos = target.sprite.rect.x;
+				targetYPos = target.sprite.rect.y;
+
+				greaterX = sprite.rect.x > target.sprite.rect.x;	// change direction if needed
+				greaterY = sprite.rect.y > target.sprite.rect.y;
+
+				lastTime = currTime;
+			}
+
+
+			// doing this for each possible combination of where the sprite is currently located in relation to where it needs to go
+			if (!greaterX && !greaterY) {
+				if (sprite.rect.x <= targetXPos && sprite.rect.y <= targetYPos) {	// this will produce smooth movement because the sprite will keep moving until both coordinates have reached or exceeded their destinations
+					startMoveTime = SDL_GetTicks64();
+
+					deltaX = abs(sprite.rect.x - target.sprite.rect.x);		// distance needed to travel
+					deltaY = abs(sprite.rect.y - target.sprite.rect.y);
+
+					xDelay = sqrt(int(round(2000 * 1.0 / deltaX))) * 1.5;	// having xDelay and yDelay proportional to distance remaining produces a curved trajectory for the projectile
+					yDelay = sqrt(int(round(2000 * 1.0 / deltaY))) * 1.5;
+
+					if (xDelay > 12)		// but don't let the delays get too high (projectile shouldn't move too slowly)
+						xDelay = 12;
+					if (yDelay > 12)
+						yDelay = 12;
+
+					setMoveSpeedX(1);
+					setMoveSpeedY(1);
+					setMoveSpeedDelayX(xDelay);
+					setMoveSpeedDelayY(yDelay);
+
+					movingRight = true;
+					movingDown = true;
+				}
+
+				if (sprite.rect.x >= targetXPos && sprite.rect.y >= targetYPos) {
+					endMoveTime = SDL_GetTicks64();
+
+					setMoveSpeedX(1);	// reset
+					setMoveSpeedY(1);
+					setMoveSpeedDelayX(15);
+					setMoveSpeedDelayY(15);
+
+					movingRight = false;
+					movingDown = false;
+
+					shouldBeDestroyed = true;
+
+					return true;
+				}
+			}
+
+			if (greaterX && !greaterY) {
+				if (sprite.rect.x >= targetXPos && sprite.rect.y <= targetYPos) {
+					startMoveTime = SDL_GetTicks64();
+
+					deltaX = abs(sprite.rect.x - target.sprite.rect.x);
+					deltaY = abs(sprite.rect.y - target.sprite.rect.y);
+
+					xDelay = sqrt(int(round(2000 * 1.0 / deltaX))) * 1.5;	
+					yDelay = sqrt(int(round(2000 * 1.0 / deltaY))) * 1.5;
+
+					if (xDelay > 12)
+						xDelay = 12;
+					if (yDelay > 12)
+						yDelay = 12;
+
+					setMoveSpeedX(1);
+					setMoveSpeedY(1);
+					setMoveSpeedDelayX(xDelay);
+					setMoveSpeedDelayY(yDelay);
+
+					movingLeft = true;
+					movingDown = true;
+				}
+
+				if (sprite.rect.x <= targetXPos && sprite.rect.y >= targetYPos) {
+					endMoveTime = SDL_GetTicks64();
+
+					setMoveSpeedX(1);	// reset
+					setMoveSpeedY(1);
+					setMoveSpeedDelayX(15);
+					setMoveSpeedDelayY(15);
+
+					movingLeft = false;
+					movingDown = false;
+
+					shouldBeDestroyed = true;
+
+					return true;
+				}
+			}
+
+			if (!greaterX && greaterY) {
+				if (sprite.rect.x <= targetXPos && sprite.rect.y >= targetYPos) {
+					startMoveTime = SDL_GetTicks64();
+
+					deltaX = abs(sprite.rect.x - target.sprite.rect.x);
+					deltaY = abs(sprite.rect.y - target.sprite.rect.y);
+
+					xDelay = sqrt(int(round(2000 * 1.0 / deltaX))) * 1.5;	
+					yDelay = sqrt(int(round(2000 * 1.0 / deltaY))) * 1.5;
+
+					if (xDelay > 12)
+						xDelay = 12;
+					if (yDelay > 12)
+						yDelay = 12;
+
+					setMoveSpeedX(1);
+					setMoveSpeedY(1);
+					setMoveSpeedDelayX(xDelay);
+					setMoveSpeedDelayY(yDelay);
+
+					movingRight = true;
+					movingUp = true;
+				}
+
+				if (sprite.rect.x >= targetXPos && sprite.rect.y <= targetYPos) {
+					endMoveTime = SDL_GetTicks64();
+
+					setMoveSpeedX(1);	// reset
+					setMoveSpeedY(1);
+					setMoveSpeedDelayX(15);
+					setMoveSpeedDelayY(15);
+
+					movingRight = false;
+					movingUp = false;
+
+					shouldBeDestroyed = true;
+
+					return true;
+				}
+			}
+
+			if (greaterX && greaterY) {
+				if (sprite.rect.x >= targetXPos && sprite.rect.y >= targetYPos) {
+					startMoveTime = SDL_GetTicks64();
+
+					deltaX = abs(sprite.rect.x - target.sprite.rect.x);
+					deltaY = abs(sprite.rect.y - target.sprite.rect.y);
+
+					xDelay = sqrt(int(round(2000 * 1.0 / deltaX))) * 1.5;	
+					yDelay = sqrt(int(round(2000 * 1.0 / deltaY))) * 1.5;
+
+					if (xDelay > 12)
+						xDelay = 12;
+					if (yDelay > 12)
+						yDelay = 12;
+
+					setMoveSpeedX(1);
+					setMoveSpeedY(1);
+					setMoveSpeedDelayX(xDelay);
+					setMoveSpeedDelayY(yDelay);
+
+					movingLeft = true;
+					movingUp = true;
+				}
+
+				if (sprite.rect.x <= targetXPos && sprite.rect.y <= targetYPos) {
+					endMoveTime = SDL_GetTicks64();
+
+					setMoveSpeedX(1);	// reset
+					setMoveSpeedY(1);
+					setMoveSpeedDelayX(15);
+					setMoveSpeedDelayY(15);
+
+					movingLeft = false;
+					movingUp = false;
+
+					shouldBeDestroyed = true;
+
+					return true;
+				}
+			}
+
+			return false;	// movement hasn't yet completed
+		}
+
+};
+
+
+
+
+int main(int argc, char* argv[])
+{
+	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
+
+	SDL_Window* window = SDL_CreateWindow("Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, 0);
+	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, 0);
+
+	//Player player("playerSprites.txt", renderer, 100, 50, 50, 75);
+	////Player player("5edited.bmp", renderer, 100, 50, 50, 75);
+	//player.setMoveSpeedDelayX(5);
+	//player.setMoveSpeedDelayY(5);
+	//player.setMoveSpeedX(1);
+	//player.setMoveSpeedY(1);
+	//player.setSpriteSwitchDelay(150);
+	//										  //500, 450
+	//Enemy goblin("playerSprites.txt", renderer, 500, 450, 50, 75, "goblin1.mvt"); //*** was "goblin1.mvt"
+	//goblin.setMoveSpeedDelayX(15);
+	//goblin.setMoveSpeedDelayY(15);
+	//goblin.setMoveSpeedX(1);
+	//goblin.setMoveSpeedY(1);
+	//goblin.setSpriteSwitchDelay(150);
+
+	//Projectile fireball("fireballSprites.txt", renderer, 0, 0, 25, 25, goblin);
+	//fireball.setMoveSpeedDelayX(15);
+	//fireball.setMoveSpeedDelayY(15);
+	//fireball.setMoveSpeedX(5);
+	//fireball.setMoveSpeedY(5);
+	//fireball.setSpriteSwitchDelay(150);
+	//fireball.setTargetUpdateDelay(5);
+
+
+
+	
+
+	std::vector<Entity*> entities;
+	
+	Player* pPlayer = new Player("playerSprites.txt", renderer, 100, 50, 50, 75);
+	pPlayer->setMoveSpeedDelayX(5);
+	pPlayer->setMoveSpeedDelayY(5);
+	pPlayer->setMoveSpeedX(1);
+	pPlayer->setMoveSpeedY(1);
+	pPlayer->setSpriteSwitchDelay(150);
+
+	entities.push_back(pPlayer);
+
+	Enemy* pGoblin = new Enemy("playerSprites.txt", renderer, 500, 450, 50, 75, "goblin2.mvt"); //*** was "goblin1.mvt"
+	pGoblin->setMoveSpeedDelayX(15);
+	pGoblin->setMoveSpeedDelayY(15);
+	pGoblin->setMoveSpeedX(1);
+	pGoblin->setMoveSpeedY(1);
+	pGoblin->setSpriteSwitchDelay(150);
+
+	entities.push_back(pGoblin);
+
+	Projectile* pFireball = new Projectile("fireballSprites.txt", renderer, 0, 0, 25, 25, *pGoblin);
+	pFireball->setMoveSpeedDelayX(15);
+	pFireball->setMoveSpeedDelayY(15);
+	pFireball->setMoveSpeedX(5);
+	pFireball->setMoveSpeedY(5);
+	pFireball->setSpriteSwitchDelay(150);
+	pFireball->setTargetUpdateDelay(5);
+
+	entities.push_back(pFireball);
+
+
+	/*std::list<std::unique_ptr<Entity>> entities2;
+	Player* pPlayer = new Player("playerSprites.txt", renderer, 100, 50, 50, 75);
+	pPlayer->setMoveSpeedDelayX(5);
+	pPlayer->setMoveSpeedDelayY(5);
+	pPlayer->setMoveSpeedX(1);
+	pPlayer->setMoveSpeedY(1);
+	pPlayer->setSpriteSwitchDelay(150);
+	entities2.emplace_back(pPlayer);
+
+	Enemy* pEnemy = new Enemy("playerSprites.txt", renderer, 500, 450, 50, 75, "goblin1.mvt");
+	pEnemy->setMoveSpeedDelayX(15);
+	pEnemy->setMoveSpeedDelayY(15);
+	pEnemy->setMoveSpeedX(1);
+	pEnemy->setMoveSpeedY(1);
+	pEnemy->setSpriteSwitchDelay(150);
+	entities2.emplace_back(pEnemy);
+
+	auto it = std::next(entities2.begin(), 1);
+	Projectile* pProj = new Projectile("fireballSprites.txt", renderer, 0, 0, 25, 25, *(*it));
+	pProj->setMoveSpeedDelayX(15);
+	pProj->setMoveSpeedDelayY(15);
+	pProj->setMoveSpeedX(5);
+	pProj->setMoveSpeedY(5);
+	pProj->setSpriteSwitchDelay(150);
+	pProj->setTargetUpdateDelay(5);
+	entities2.emplace_back(pProj);*/
+
+
+	/*std::list<std::unique_ptr<Enemy>> enemies;
+	enemies.push_back(std::make_unique<Enemy>("playerSprites.txt", renderer, 500, 450, 50, 75, "goblin1.mvt"));
+	auto it = enemies.begin();
+	(*it)->setMoveSpeedDelayX(15);
+	(*it)->setMoveSpeedDelayY(15);
+	(*it)->setMoveSpeedX(1);
+	(*it)->setMoveSpeedY(1);
+	(*it)->setSpriteSwitchDelay(150);
+
+
+
+
+	std::list<std::unique_ptr<Entity>> entities;
+
+	entities.push_back(std::make_unique<Player>("playerSprites.txt", renderer, 100, 50, 50, 75));
+	auto it = entities.begin();
+	(*it)->setMoveSpeedDelayX(5);
+	(*it)->setMoveSpeedDelayY(5);
+	(*it)->setMoveSpeedX(1);
+	(*it)->setMoveSpeedY(1);
+	(*it)->setSpriteSwitchDelay(150);
+	
+	entities.push_back(std::make_unique<Enemy>("playerSprites.txt", renderer, 500, 450, 50, 75, "goblin1.mvt"));
+	it = std::next(entities.begin(), 1);
+	(*it)->setMoveSpeedDelayX(15);
+	(*it)->setMoveSpeedDelayY(15);
+	(*it)->setMoveSpeedX(1);
+	(*it)->setMoveSpeedY(1);
+	(*it)->setSpriteSwitchDelay(150);
+
+	entities.push_back(std::make_unique<Projectile>("fireballSprites.txt", renderer, 0, 0, 25, 25, goblin));
+	it = std::next(entities.begin(), 2);
+	(*it)->setMoveSpeedDelayX(15);
+	(*it)->setMoveSpeedDelayY(15);
+	(*it)->setMoveSpeedX(5);
+	(*it)->setMoveSpeedY(5);
+	(*it)->setSpriteSwitchDelay(150);
+	(*it)->setTargetUpdateDelay(5);*/
+
+
+	/*entities.push_back(new player);
+	entities.push_back(goblin);
+	entities.push_back(fireball);*/
+	//std::list<Enemy> enemies;
+	//std::list<Projectile> projectiles;
+
+	/*enemies.push_back(goblin);
+	projectiles.push_back(fireball);*/
+
+
+
+
+	Uint64 lastTime = SDL_GetTicks64();
+	while (running) {	// game loop
+
+		Uint64 currTime = SDL_GetTicks64();		//milliseconds passed since SDL library initialized
+		Uint64 frameTime = currTime - lastTime;		// frameTime now holds the amount of time it took to get to the next frame
+		lastTime = currTime;
+
+
+
+
+		/*auto it = entities2.begin();
+		handleInput(*(*it));*/
+
+		handleInput(*pPlayer);
+
+
+		//handleInput(player);
+		SDL_RenderClear(renderer);
+		
+		// *** Need a function here that can update goblin's booleans 
+		//goblin.updatePosition();
+		//goblin.updatePositionSmooth();
+
+
+
+
+
+		while (frameTime > 0) {		// while we haven't expended all of the time interval, update the position in intervals of dt
+			Uint64 deltaTime = std::min(frameTime, MAX_DT);		// deltaTime shouldn't get any higher than MAX_DT
+			//std::cout << deltaTime << std::endl;
+			//player.Update(deltaTime);	// pass in a variable time step (only variable for values of deltaTime <= MAX_DT)
+
+			//goblin.updatePositionSmooth();
+			//goblin.Update(deltaTime);
+
+			//fireball.updatePositionSmooth(goblin);
+			//fireball.Update(deltaTime/*, goblin*/);
+
+			for (int i = 0; i < entities.size(); ++i) {
+				if (entities[i] != nullptr) {
+					if (entities[i]->shouldBeDestroyed) {
+						delete entities[i];
+						entities[i] = nullptr;
+						//entities.erase(entities.begin() + i);
+					}
+					else {
+						entities[i]->Update(deltaTime);
+					}
+				}
+			}
+
+			//for (std::list<Entity>::iterator it = entities.begin(); it != entities.end(); ++it) {
+			//	(*it).Update(deltaTime);
+			//	/*if ((*it).shouldBeDestroyed) {
+			//		entities.erase(it);
+			//	}
+			//	else {
+			//		(*it).Update(deltaTime);
+			//	}*/
+			//}
+
+			//for (auto it = entities2.begin(); it != entities2.end(); ++it) {
+			//	(*it)->Update(deltaTime);
+			//	/*if ((*it).shouldBeDestroyed) {
+			//		entities.erase(it);
+			//	}
+			//	else {
+			//		(*it).Update(deltaTime);
+			//	}*/
+			//}
+
+			frameTime -= deltaTime;
+		}
+		
+		/*player.Draw();
+		goblin.Draw();
+		fireball.Draw();*/
+
+		/*for (std::list<Entity>::iterator it = entities.begin(); it != entities.end(); ++it) {
+			(*it).Draw();
+		}*/
+
+		/*for (auto it = entities2.begin(); it != entities2.end(); ++it) {
+			(*it)->Draw();
+		}*/
+
+		for (int i = 0; i < entities.size(); ++i) {
+			if (entities[i] != nullptr) {
+				entities[i]->Draw();
+			}
+		}
+
+		SDL_RenderPresent(renderer);
+		
+	}
+
+	SDL_Quit();
+	return 0;
+}
+
+void handleInput(Entity& player)
+{
+	SDL_Event event;
+	while (SDL_PollEvent(&event)) {
+		switch (event.type) {
+			// close window, etc.
+			case SDL_QUIT:
+				running = false;
+				break;
+
+			case SDL_KEYDOWN:
+				switch (event.key.keysym.sym) {
+					// use escape key to quit
+					case SDLK_ESCAPE:
+						running = false;
+						break;
+
+					// player movement
+					case SDLK_d:
+					case SDLK_RIGHT:
+						player.movingRight = true;
+						break;
+
+					case SDLK_a:
+					case SDLK_LEFT:
+						player.movingLeft = true;
+						break;
+
+					case SDLK_s:
+					case SDLK_DOWN:
+						player.movingDown = true;
+						break;
+
+					case SDLK_w:
+					case SDLK_UP:
+						player.movingUp = true;
+						break;
+				}
+				break;
+
+			case SDL_KEYUP:
+				switch (event.key.keysym.sym) {
+					case SDLK_d:
+					case SDLK_RIGHT:
+						player.movingRight = false;
+						break;
+
+					case SDLK_a:
+					case SDLK_LEFT:
+						player.movingLeft = false;
+						break;
+
+					case SDLK_s:
+					case SDLK_DOWN:
+						player.movingDown = false;
+						break;
+
+					case SDLK_w:
+					case SDLK_UP:
+						player.movingUp = false;
+						break;
+				}
+				break;
+		}
+	}
+}

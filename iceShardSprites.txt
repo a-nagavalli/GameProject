@@ -1,0 +1,9 @@
+Ice Shard Sprites
+south1.bmp
+north1.bmp
+east1.bmp
+west1.bmp
+northeast1.bmp
+northwest1.bmp
+southeast1.bmp
+southwest1.bmp
