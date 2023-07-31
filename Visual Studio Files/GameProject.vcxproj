@@ -78,13 +78,13 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>E:\vs projects\GameProject\GameProject\SDL2-2.26.5\include;$(IncludePath)</IncludePath>
-    <LibraryPath>E:\vs projects\GameProject\GameProject\SDL2-2.26.5\lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)..\SDL2-2.26.5\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)\SDL2-2.26.5\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>E:\vs projects\GameProject\GameProject\SDL2-2.26.5\include;$(IncludePath)</IncludePath>
-    <LibraryPath>E:\vs projects\GameProject\GameProject\SDL2-2.26.5\lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)..\SDL2-2.26.5\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)\SDL2-2.26.5\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
