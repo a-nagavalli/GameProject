@@ -1,3 +1,4 @@
+![GameProjectThumbnail](https://github.com/a-nagavalli/GameProject/assets/139515632/062ddcf7-9d84-4afb-a2a8-b827036a5720)
 # GameProject
 This is a small game made using SDL. The "engine" or "framework" (using these terms very loosely) was made from scratch.
 
@@ -17,3 +18,4 @@ You win if you defeat all the enemies before they defeat you.
 [UI pieces](https://opengameart.org/content/ui-pieces) by [Buch](https://opengameart.org/users/buch), used under [CC0](https://creativecommons.org/publicdomain/zero/1.0/).
 
 [Bullet Collection 1 (M484)](https://opengameart.org/content/bullet-collection-1-m484) by [Master484](https://m484games.ucoz.com/), used under [CC0](https://creativecommons.org/publicdomain/zero/1.0/).
+
