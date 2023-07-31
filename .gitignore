@@ -1,0 +1,5 @@
+# ignoring AssetSources file
+AssetSources.txt
+
+# ignore SDL source files
+SDL2-2.26.5
