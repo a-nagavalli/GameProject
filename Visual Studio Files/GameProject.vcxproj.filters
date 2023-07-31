@@ -15,39 +15,39 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="..\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Entity.h">
+    <ClInclude Include="..\Entity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Sprite.h">
+    <ClInclude Include="..\Sprite.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Enemy.h">
+    <ClInclude Include="..\Enemy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h">
+    <ClInclude Include="..\Player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Projectile.h">
+    <ClInclude Include="..\Projectile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SpriteContainer.h">
+    <ClInclude Include="..\SpriteContainer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Spell_Enum.h">
+    <ClInclude Include="..\Spell_Enum.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="HealthBar.h">
+    <ClInclude Include="..\HealthBar.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SpellbarBox.h">
+    <ClInclude Include="..\SpellbarBox.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Manager.h">
+    <ClInclude Include="..\Manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

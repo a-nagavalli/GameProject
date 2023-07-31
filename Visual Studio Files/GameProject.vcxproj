@@ -145,19 +145,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="..\main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Enemy.h" />
-    <ClInclude Include="Entity.h" />
-    <ClInclude Include="HealthBar.h" />
-    <ClInclude Include="Manager.h" />
-    <ClInclude Include="Player.h" />
-    <ClInclude Include="Projectile.h" />
-    <ClInclude Include="SpellbarBox.h" />
-    <ClInclude Include="Spell_Enum.h" />
-    <ClInclude Include="Sprite.h" />
-    <ClInclude Include="SpriteContainer.h" />
+    <ClInclude Include="..\Enemy.h" />
+    <ClInclude Include="..\Entity.h" />
+    <ClInclude Include="..\HealthBar.h" />
+    <ClInclude Include="..\Manager.h" />
+    <ClInclude Include="..\Player.h" />
+    <ClInclude Include="..\Projectile.h" />
+    <ClInclude Include="..\SpellbarBox.h" />
+    <ClInclude Include="..\Spell_Enum.h" />
+    <ClInclude Include="..\Sprite.h" />
+    <ClInclude Include="..\SpriteContainer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
