@@ -1,6 +1,6 @@
 ![GameProjectThumbnail](https://github.com/a-nagavalli/GameProject/assets/139515632/062ddcf7-9d84-4afb-a2a8-b827036a5720)
 # GameProject
-This is a small game made using SDL. The "engine" or "framework" (using these terms very loosely) was made from scratch.
+This is a small game made using SDL. The engine/framework was made from scratch.
 
 Use WASD to move. Click on an enemy to select it for targeting, then press either Q (fireball), W (ice shard), or E (thunder) to cast a spell. 
 
